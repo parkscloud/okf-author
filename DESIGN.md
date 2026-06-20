@@ -122,10 +122,17 @@ okf-author/
    Verified: CONFORMANT on all three Google bundles (ga4/crypto_bitcoin/stackoverflow, 78 md
    files, 0 errors), correct errors on 6 isolated broken fixtures, and the minimal-parser
    fallback agrees with PyYAML.
-3. **install.py** — cross-platform copy installer; confirm Codex's exact skills path first,
-   then verify a real install into both `~/.claude/skills/okf-author/` and Codex's dir.
-4. **SKILL.md** — author/convert/validate behavior per §6; end-to-end test: a dry-run conversion
-   of a small sample directory, then `validate.py` on the result.
+3. **install.py** — **DONE (2026-06-20).** Cross-platform copy installer
+   (`--all`/`--claude`/`--codex`, `--dry-run`, `--claude-dir`/`--codex-dir` overrides).
+   Codex path confirmed as `~/.agents/skills/` against OpenAI's official Codex docs (some
+   third-party guides wrongly cite `~/.codex/skills/`). Verified by subagent: dry-run, real
+   install into both roots (correct files, no `__pycache__`, exec bit preserved), clean
+   re-install, and the no-target error (exit 2).
+4. **SKILL.md** — **DONE (2026-06-20).** One skill, three modes (Author/Convert/Validate) with
+   the hybrid trigger, smart-default frontmatter, safe-staged conversion, and the
+   README-vs-`index.md` destination question. End-to-end verified: a subagent followed SKILL.md
+   to convert real meeting notes (copied to `/tmp`) into a bundle that passed `validate.py`
+   (default and `--strict`); SKILL.md judged clear and complete, source left untouched.
 5. **Polish + release** — finalize `README.md` and the third-party notice; commit; create the
    public `github.com/parkscloud/okf-author` and push on the user's go-ahead (D8).
 
