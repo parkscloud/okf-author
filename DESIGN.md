@@ -1,8 +1,7 @@
 # okf-author — Design Specification
 
-**Status: v0.0.1 — implementing (planning complete).** Started 2026-06-20. All nine
-decisions are settled in §2; the build proceeds per the staged plan (§7). Stage 1
-(scaffold + vendored spec) is complete.
+**Status: v1.0.0 — released 2026-06-20.** All nine decisions are settled in §2; every build
+stage (§7) is complete and verified; published at <https://github.com/parkscloud/okf-author>.
 
 ## 1. Summary
 
@@ -133,8 +132,10 @@ okf-author/
    README-vs-`index.md` destination question. End-to-end verified: a subagent followed SKILL.md
    to convert real meeting notes (copied to `/tmp`) into a bundle that passed `validate.py`
    (default and `--strict`); SKILL.md judged clear and complete, source left untouched.
-5. **Polish + release** — finalize `README.md` and the third-party notice; commit; create the
-   public `github.com/parkscloud/okf-author` and push on the user's go-ahead (D8).
+5. **Polish + release** — **DONE (2026-06-20).** Finalized `README.md` (install/usage/layout),
+   added `CLAUDE.md` and an example bundle (`examples/handbook`), bumped all version markers to
+   **v1.0.0**, created the public repo `github.com/parkscloud/okf-author`, pushed `main` + tag
+   `v1.0.0`, and published the v1.0.0 release.
 
 ## 8. Versioning
 
@@ -153,3 +154,4 @@ matching **git tag** (`vMAJOR.MINOR.PATCH`) — bump them together; the git tag 
 | Version | Date | Notes |
 |---------|------|-------|
 | 0.0.1 | 2026-06-20 | Initial scaffold: README, DESIGN (decisions D1–D9), MIT LICENSE, vendored OKF v0.1 spec. |
+| 1.0.0 | 2026-06-20 | First functional release: `validate.py`, `SKILL.md` (three modes), `install.py` (Claude Code + Codex), `examples/handbook`, `CLAUDE.md`, full docs. Verified against Google's bundles, broken fixtures, and an end-to-end conversion. |
