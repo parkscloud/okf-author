@@ -1,6 +1,6 @@
 # okf-author — Design Specification
 
-**Status: v1.1.0 — released 2026-06-20.** All nine decisions are settled in §2; every build
+**Status: v1.2.0 — released 2026-06-20.** All ten decisions are settled in §2; every build
 stage (§7) is complete and verified; published at <https://github.com/parkscloud/okf-author>.
 
 ## 1. Summary
@@ -40,14 +40,15 @@ Decisions made with the user, one at a time. Each open question in §3 becomes a
 | D3 | Cross-agent packaging | Single hand-authored `SKILL.md` as the source of truth + a cross-platform `install.py --all\|--claude\|--codex` that copies the self-contained skill folder into `~/.claude/skills/okf-author/` (Claude Code) and Codex's skills dir | No build/transform step and no hosting; `git clone` then `python install.py --all` works on Windows/Mac/Linux. `SKILL.md` *is* the product, so it is the single source of truth. Repo laid out so a Claude Code plugin/marketplace can be added later for one-command install without reworking the skill. Decided 2026-06-20. |
 | D4 | Structure & activation | One skill (single `SKILL.md`) with three modes — Author, Convert, Validate. Hybrid trigger: **apply** OKF when the user mentions OKF or is working inside an existing OKF bundle; **offer** (ask, proceed on yes) for any other markdown authoring. Anti-nag: offer once per directory/session, skip throwaway files, never re-offer after a decline | Model-invoked via a deliberately broad `description`, so it works in both Claude and Codex; best-effort by nature, so the offer is gated to avoid nagging. A deterministic Claude-Code-only `.md`-write hook was considered and deferred (Claude-only, separate install, more invasive) — revisit only if the soft offer proves unreliable. Decided 2026-06-20. |
 | D5 | Type taxonomy & frontmatter | Spec-faithful with smart defaults: require only `type` (per spec); when authoring, infer a fitting `type` from content and confirm it, and auto-populate `title`, `description`, `timestamp` (add `tags`/`resource` when they apply). No hardcoded type enum; keep types consistent within a bundle (reuse existing types, avoid synonyms). Docs ship a short, non-binding "common types for inspiration" list | Honors OKF's rule that types are free-form and not centrally registered (and the D2 generic goal), while still producing rich, useful frontmatter instead of thin docs. Decided 2026-06-20. |
-| D6 | Conversion behavior | Safe & staged. Output: convert in-place only when the directory is a clean git repo (reversible); otherwise write a parallel `*-okf/` copy — never silently mutate un-versioned originals. Plan-first (dry-run by default); convert on the user's go-ahead. **Stage 1** adds frontmatter (`type` + smart defaults), no renames; **Stage 2** (opt-in) is structural — add `index.md` (keep `README.md`), create `log.md`, rewrite links to bundle-relative, add `okf_version`; file renames always confirmed. `README.md` is kept with an `index.md` added alongside (humans on GitHub vs. agents navigating), not renamed | Non-destructive by default protects users' files (D2 generic/public + safety-first); staging delivers high-value frontmatter before any risky structural change; git-gating makes in-place edits reversible. Verified 2026-06-20 against GitHub docs: GitHub auto-renders a `README` file (looked up in `.github`, then root, then `docs`) at the top of a repo/folder view, whereas `index.md` is not rendered that way in the file browser (it is only the served page under GitHub Pages) — so `README.md` must remain the human/GitHub face. Decided 2026-06-20. |
+| D6 | Conversion behavior | Safe & staged. Output: convert in-place only when the directory is a clean git repo (reversible); otherwise write a parallel `*-okf/` copy — never silently mutate un-versioned originals. Plan-first (dry-run by default); convert on the user's go-ahead. **Stage 1** adds frontmatter (`type` + smart defaults), no renames; **Stage 2** (opt-in) is structural — add `index.md` (keep `README.md`), create `log.md`, rewrite links to bundle-relative (**SUPERSEDED by D10** — prefer relative, not bundle-absolute `/`-rooted, links), add `okf_version`; file renames always confirmed. `README.md` is kept with an `index.md` added alongside (humans on GitHub vs. agents navigating), not renamed | Non-destructive by default protects users' files (D2 generic/public + safety-first); staging delivers high-value frontmatter before any risky structural change; git-gating makes in-place edits reversible. Verified 2026-06-20 against GitHub docs: GitHub auto-renders a `README` file (looked up in `.github`, then root, then `docs`) at the top of a repo/folder view, whereas `index.md` is not rendered that way in the file browser (it is only the served page under GitHub Pages) — so `README.md` must remain the human/GitHub face. Decided 2026-06-20. |
 | D7 | Spec vendoring + validation | (a) Vendor Google's `SPEC.md` **verbatim** inside the skill (Apache-2.0; license + attribution preserved), pinned to OKF **v0.1**; `SKILL.md` treats the vendored copy as the source of truth and notes the pinned version (refresh when OKF revs). (b) Ship a **dependency-free** `validate.py` (Python stdlib only) that checks a bundle against OKF §9 conformance — frontmatter present + parseable, non-empty `type`, reserved-file rules, link sanity — and prints pass/fail; uses `PyYAML` for stricter parsing only if already installed, never requires it | Pushes correctness onto the real spec rather than model memory (matches the verify-empirically goal and D5); a zero-install validator keeps the same friction-free bar as `install.py` (D3). Decided 2026-06-20. |
 | D8 | License & hosting | okf-author's own code (`SKILL.md`, `install.py`, `validate.py`) under **MIT**; the vendored `SPEC.md` retains its original **Apache-2.0** + attribution. Publish as a **public** repo at **`github.com/parkscloud/okf-author`** (push only on the user's go-ahead) | MIT is the shortest, most common license for a small dev tool/skill and pairs cleanly with the Apache-2.0 vendored file; public + `parkscloud` matches the D2 generic/public goal. Decided 2026-06-20. |
 | D9 | README vs. `index.md` by destination | **Always ask** (once per bundle): the skill asks whether the project is headed to GitHub or a similar forge. Forge-bound → maintain **both** `README.md` (human/forge-rendered overview) + `index.md` (OKF reserved listing, no frontmatter); not forge-bound → **`index.md` only**. Non-destructive (D6): an existing `README.md` is never deleted — if not forge-bound but one exists, leave it and ensure `index.md` exists (optionally offer Stage-2 consolidation). Asked once per bundle, not per file (D4 anti-nag) | User chose an explicit ask over inference for predictability and control; a `README.md` earns its place only where a forge auto-renders it (verified in D6). Decided 2026-06-20. |
+| D10 | Cross-link form (relative vs. bundle-absolute) | Recommend **relative** Markdown links (e.g. `../concepts/x.md`); do not rewrite to bundle-absolute `/`-rooted links. Supersedes the link-form choice in D6. `validate.py` accepts both forms; `generate_indexes.py` already emits relative links. | Both forms are conformant (spec §5.1–5.2), so this is a spec-permitted preference, not a violation — but GitHub and other forges resolve a `/`-rooted link against the **repository** root, so bundle-absolute links break whenever the bundle is a subdirectory. Verified empirically 2026-06-20 on the live repo: in `examples/handbook/concepts/onboarding.md`, GitHub rendered `/concepts/glossary.md` as `…/blob/main/concepts/glossary.md` — a 404, since the file lives under `examples/handbook/`. Relative links render correctly wherever the bundle sits, preserving OKF's "renders on GitHub" promise. Decided 2026-06-20. |
 
 ## 3. Open decisions (planning queue)
 
-_All planning decisions are resolved — D1–D9 in §2, as of 2026-06-20._ The finalized
+_All planning decisions are resolved — D1–D10 in §2, as of 2026-06-20._ The finalized
 design follows: repo layout (§5), skill behavior (§6), and the staged build plan (§7).
 Implementation begins after sign-off.
 
@@ -72,17 +73,20 @@ Implementation begins after sign-off.
 okf-author/
 ├── README.md                     # orientation, status, install steps (the human/GitHub face)
 ├── DESIGN.md                     # this spec + decision log
+├── CLAUDE.md                     # guidance for AI agents working in this repo
 ├── LICENSE                       # MIT — okf-author's own code (D8)
 ├── install.py                    # cross-platform installer (D3): copies skill/okf-author/ into the agents' skills dirs
 ├── skill/
 │   └── okf-author/               # the self-contained skill — this whole dir is what gets installed
 │       ├── SKILL.md              # name + description frontmatter + Author/Convert/Validate instructions
 │       ├── validate.py           # dependency-free OKF v0.1 conformance checker (D7); also runnable standalone
+│       ├── generate_indexes.py   # deterministic index.md / log.md generator (D6 Stage 2); also runnable standalone
 │       └── reference/
 │           ├── SPEC.md           # OKF v0.1 spec, vendored verbatim (D7) — pinned commit ee67a5c
 │           ├── SPEC-LICENSE.txt  # Apache-2.0 license (upstream LICENSE.md, verbatim)
 │           └── ATTRIBUTION.md    # provenance: source, pinned commit, SHA-256, license
-└── docs/                         # dated plan docs, as needed
+└── examples/
+    └── handbook/                 # a tiny conformant example bundle
 ```
 
 - **install.py** — run from a clone; `--all` / `--claude` / `--codex` copy `skill/okf-author/`
@@ -91,6 +95,8 @@ okf-author/
   body covers the three modes (§6).
 - **skill/okf-author/validate.py** — copied with the skill so Validate mode can call it; also
   runnable directly (`python validate.py <dir>`).
+- **skill/okf-author/generate_indexes.py** — copied with the skill; (re)generates `index.md` /
+  `log.md` from concept frontmatter for Convert Stage 2 (§6); also runnable directly.
 - **skill/okf-author/reference/SPEC.md** — the authority the skill reads (D7), pinned to OKF v0.1.
 
 ## 6. Skill behavior (SKILL.md modes)
@@ -103,7 +109,7 @@ okf-author/
   else `index.md` only.
 - **Convert (D6):** safe & staged. In-place only in a clean git repo, else a parallel `*-okf/` copy;
   plan/dry-run first, convert on go-ahead. Stage 1 = frontmatter; Stage 2 (opt-in) = structure
-  (add `index.md`, `log.md`, bundle-relative links, `okf_version`), renames always confirmed;
+  (add `index.md`, `log.md`, relative links (D10), `okf_version`), renames always confirmed;
   an existing `README.md` is never deleted.
 - **Validate (D7):** run `validate.py` and report pass/fail against §9 — don't eyeball.
 - **Authority (D7):** defer to `reference/SPEC.md` for all rules; the skill summarizes, the
@@ -157,3 +163,4 @@ matching **git tag** (`vMAJOR.MINOR.PATCH`) — bump them together; the git tag 
 | 1.0.0 | 2026-06-20 | First functional release: `validate.py`, `SKILL.md` (three modes), `install.py` (Claude Code + Codex), `examples/handbook`, `CLAUDE.md`, full docs. Verified against Google's bundles, broken fixtures, and an end-to-end conversion. |
 | 1.0.1 | 2026-06-20 | `validate.py`: URL-decode link targets so percent-encoded (`%20`) intra-bundle links resolve — removes false-positive broken-link warnings. |
 | 1.1.0 | 2026-06-20 | Add `generate_indexes.py`: deterministically (re)generates per-folder `index.md` + `log.md` and the root `index.md` (`okf_version`) from concept frontmatter. |
+| 1.2.0 | 2026-06-20 | **D10:** recommend **relative** cross-links over bundle-absolute `/`-rooted links (which break on GitHub/forges when the bundle is a subdirectory — verified live); updated SKILL.md guidance + templates and the `examples/handbook` bundle (`generate_indexes.py` already emitted relative links). Also corrected the §5 repo-layout tree (added `CLAUDE.md` + `generate_indexes.py`; dropped the never-created `docs/`). |

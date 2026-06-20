@@ -8,8 +8,8 @@ timestamp: 2026-06-20T00:00:00Z
 
 # Steps
 
-1. Read the [glossary](/concepts/glossary.md) to learn the core terms.
-2. Skim the rest of the handbook from the [index](/index.md).
+1. Read the [glossary](glossary.md) to learn the core terms.
+2. Skim the rest of the handbook from the [index](../index.md).
 
 # Notes
 

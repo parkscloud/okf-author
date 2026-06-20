@@ -5,7 +5,7 @@ description: Author, convert, and validate Markdown in Open Knowledge Format (OK
 
 # okf-author
 
-Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.1.0**.
+Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.2.0**.
 
 OKF (Google Cloud, v0.1, released 2026-06-12) represents knowledge as a directory of
 Markdown files with YAML frontmatter. The authoritative specification is vendored next to
@@ -39,8 +39,11 @@ explicitly at any time on request.
 - **Reserved filenames:** `index.md` — a directory listing for progressive disclosure, with
   **no frontmatter** (except the bundle-root `index.md`, which may carry `okf_version`); and
   `log.md` — chronological history whose `##` headings are ISO `YYYY-MM-DD` dates.
-- **Links:** ordinary Markdown links express relationships. Prefer **bundle-absolute** links
-  beginning with `/` (resolved from the bundle root); relative links are also allowed.
+- **Links:** ordinary Markdown links express relationships. Both **relative** links
+  (`../concepts/x.md`) and **bundle-absolute** links beginning with `/` (resolved from the
+  bundle root) are conformant — but **prefer relative**: GitHub and other forges resolve a
+  `/`-rooted link against the *repository* root, so bundle-absolute links break whenever the
+  bundle is a subdirectory, while relative links render correctly wherever the bundle lives.
 - **Conformance (§9):** every non-reserved `.md` has parseable frontmatter with a non-empty
   `type`, and reserved files follow their structure. Everything else is soft guidance —
   missing optional fields, unknown types, and broken links never make a bundle nonconformant.
@@ -72,7 +75,8 @@ When writing a new document in an OKF context (or after the user accepts an offe
    topics. Use the current time, in ISO 8601, for `timestamp`.
 3. **Write a structured body** — headings, lists, tables, fenced code. Use the conventional
    headings when they apply: `# Schema`, `# Examples`, `# Citations`.
-4. **Link** to related concepts with bundle-absolute links (`/path/to/concept.md`).
+4. **Link** to related concepts with **relative** links (e.g. `../concepts/glossary.md`) so
+   they render correctly on GitHub and other forges wherever the bundle lives (see *Links* above).
 5. **New bundle?** Ask the destination question (below), create the right entry files, then
    run `validate.py` on the result.
 
@@ -113,7 +117,7 @@ host?"**
 ```markdown
 # <Group / Section heading>
 
-* [<Title>](<relative-or-absolute-link>) - <one-line description>
+* [<Title>](<relative-link>) - <one-line description>
 * [<Subdirectory>](subdir/index.md) - <what it contains>
 ```
 
@@ -121,8 +125,8 @@ host?"**
 # Update Log
 
 ## 2026-06-20
-* **Creation**: Established the [orders table](/tables/orders.md).
-* **Update**: Revised the SLA in the [freshness playbook](/playbooks/freshness.md).
+* **Creation**: Established the [orders table](tables/orders.md).
+* **Update**: Revised the SLA in the [freshness playbook](playbooks/freshness.md).
 ```
 
 ## Mode 3 — Validate
@@ -143,3 +147,7 @@ links) are advisory and never fail a bundle. Fix the errors, then re-run.
 `reference/SPEC.md` is the vendored OKF v0.1 specification (verbatim; Apache-2.0, © Google
 LLC) and governs every rule above. If this skill and the spec ever disagree, the spec wins —
 read it.
+
+One deliberate, spec-permitted refinement: §5.1–5.2 make **both** link forms conformant and
+the spec *recommends* bundle-absolute, but this skill prefers **relative** links because
+bundle-absolute `/…` links break on GitHub and other forges when the bundle is a subdirectory.

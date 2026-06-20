@@ -12,4 +12,4 @@ timestamp: 2026-06-20T00:00:00Z
 - **Concept** — a single `.md` document describing one idea or asset.
 - **Frontmatter** — the YAML metadata block at the top of a concept, delimited by `---`.
 
-See the [onboarding guide](/concepts/onboarding.md) for how these fit together.
+See the [onboarding guide](onboarding.md) for how these fit together.
