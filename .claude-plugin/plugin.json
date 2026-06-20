@@ -1,0 +1,23 @@
+{
+  "name": "okf-author",
+  "version": "1.3.0",
+  "description": "Author, convert, and validate Markdown in Open Knowledge Format (OKF) — the open, vendor-neutral spec for representing knowledge as a directory of Markdown files with YAML frontmatter.",
+  "author": {
+    "name": "Robert Parks",
+    "email": "raparks@icloud.com"
+  },
+  "homepage": "https://github.com/parkscloud/okf-author",
+  "repository": "https://github.com/parkscloud/okf-author",
+  "license": "MIT",
+  "keywords": [
+    "okf",
+    "open-knowledge-format",
+    "markdown",
+    "yaml-frontmatter",
+    "knowledge-management",
+    "knowledge-base",
+    "agent-skills",
+    "codex",
+    "documentation"
+  ]
+}

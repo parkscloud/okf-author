@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """install.py - install the okf-author skill into Claude Code and/or Codex.
 
-Copies the self-contained skill folder (`skill/okf-author/`) into the per-user
+Copies the self-contained skill folder (`skills/okf-author/`) into the per-user
 skills directory of each target agent:
 
     Claude Code : ~/.claude/skills/okf-author/
@@ -35,7 +35,7 @@ import sys
 from pathlib import Path
 
 SKILL_NAME = "okf-author"
-SOURCE = Path(__file__).resolve().parent / "skill" / SKILL_NAME
+SOURCE = Path(__file__).resolve().parent / "skills" / SKILL_NAME
 
 CLAUDE_DEFAULT = Path.home() / ".claude" / "skills"
 CODEX_DEFAULT = Path.home() / ".agents" / "skills"

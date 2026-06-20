@@ -1,0 +1,16 @@
+{
+  "name": "okf-author",
+  "owner": {
+    "name": "Robert Parks",
+    "email": "raparks@icloud.com"
+  },
+  "description": "Open Knowledge Format (OKF) authoring tools — the okf-author plugin for authoring, converting, and validating OKF Markdown in Claude Code.",
+  "plugins": [
+    {
+      "name": "okf-author",
+      "source": "./",
+      "description": "Author, convert, and validate Markdown in Open Knowledge Format (OKF).",
+      "version": "1.3.0"
+    }
+  ]
+}

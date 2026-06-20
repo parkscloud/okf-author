@@ -1,6 +1,6 @@
 # okf-author
 
-> **STATUS: v1.2.0.** Cross-agent skill for authoring, converting, and validating Open
+> **STATUS: v1.3.0.** Cross-agent skill for authoring, converting, and validating Open
 > Knowledge Format (OKF) Markdown — installable in **Claude Code** and **Codex**.
 > Repo: <https://github.com/parkscloud/okf-author> · Design + decision log: [`DESIGN.md`](DESIGN.md).
 
@@ -52,9 +52,23 @@ Markdown links; the only required frontmatter field is `type` (with `title`, `de
 
 It activates when you mention OKF or work inside an existing OKF bundle, and otherwise
 *offers* OKF once when you're authoring substantial Markdown. Full behavior:
-[`skill/okf-author/SKILL.md`](skill/okf-author/SKILL.md).
+[`skills/okf-author/SKILL.md`](skills/okf-author/SKILL.md).
 
 ## Install
+
+### Claude Code — plugin (recommended; auto-updates)
+
+Install from this repo's built-in marketplace:
+
+```text
+/plugin marketplace add parkscloud/okf-author
+/plugin install okf-author@okf-author
+```
+
+Then enable auto-update for the `okf-author` marketplace in the `/plugin` interface, and Claude
+Code refreshes it at session start. (Codex has no plugin system — use the script install below.)
+
+### Script install (Claude Code + Codex)
 
 From a clone of this repo (Python 3, standard library only — no `pip install`):
 
@@ -81,13 +95,13 @@ Both bundled tools are dependency-free (PyYAML used only if already installed) a
 
 ```bash
 # validate a bundle against OKF v0.1 conformance
-python3 skill/okf-author/validate.py examples/handbook       # -> CONFORMANT
-python3 skill/okf-author/validate.py --strict path/to/bundle # also require title/description/timestamp
-python3 skill/okf-author/validate.py --json path/to/bundle   # machine-readable
+python3 skills/okf-author/validate.py examples/handbook       # -> CONFORMANT
+python3 skills/okf-author/validate.py --strict path/to/bundle # also require title/description/timestamp
+python3 skills/okf-author/validate.py --json path/to/bundle   # machine-readable
 
 # (re)generate index.md + log.md across a bundle from its frontmatter
-python3 skill/okf-author/generate_indexes.py path/to/bundle --title "My Knowledge Base"
-python3 skill/okf-author/generate_indexes.py path/to/bundle --dry-run
+python3 skills/okf-author/generate_indexes.py path/to/bundle --title "My Knowledge Base"
+python3 skills/okf-author/generate_indexes.py path/to/bundle --dry-run
 ```
 
 Exit code `0` = conformant, `1` = errors, `2` = bad path. Warnings (missing recommended
@@ -98,8 +112,9 @@ used if installed; otherwise a built-in minimal parser handles the conformance c
 
 ```
 okf-author/
+├── .claude-plugin/          # plugin.json + marketplace.json — Claude Code plugin + marketplace
 ├── README.md · DESIGN.md · CLAUDE.md · LICENSE · install.py
-├── skill/okf-author/        # the installable skill (this folder is what install.py copies)
+├── skills/okf-author/        # the skill — installed by install.py and bundled into the plugin
 │   ├── SKILL.md             # the skill: Author / Convert / Validate
 │   ├── validate.py          # dependency-free OKF v0.1 conformance checker
 │   ├── generate_indexes.py  # deterministic index.md / log.md generator
@@ -115,8 +130,8 @@ Issues and contributions welcome.
 ## License
 
 Licensed **[MIT](LICENSE)** for okf-author's own code. The vendored OKF specification
-(`skill/okf-author/reference/SPEC.md`) remains © Google LLC under **Apache-2.0** and is
-included verbatim with attribution (see `skill/okf-author/reference/`).
+(`skills/okf-author/reference/SPEC.md`) remains © Google LLC under **Apache-2.0** and is
+included verbatim with attribution (see `skills/okf-author/reference/`).
 
 ## References
 

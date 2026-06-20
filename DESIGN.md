@@ -1,6 +1,6 @@
 # okf-author — Design Specification
 
-**Status: v1.2.0 — released 2026-06-20.** All ten decisions are settled in §2; every build
+**Status: v1.3.0 — released 2026-06-20.** All eleven decisions are settled in §2; every build
 stage (§7) is complete and verified; published at <https://github.com/parkscloud/okf-author>.
 
 ## 1. Summary
@@ -45,10 +45,11 @@ Decisions made with the user, one at a time. Each open question in §3 becomes a
 | D8 | License & hosting | okf-author's own code (`SKILL.md`, `install.py`, `validate.py`) under **MIT**; the vendored `SPEC.md` retains its original **Apache-2.0** + attribution. Publish as a **public** repo at **`github.com/parkscloud/okf-author`** (push only on the user's go-ahead) | MIT is the shortest, most common license for a small dev tool/skill and pairs cleanly with the Apache-2.0 vendored file; public + `parkscloud` matches the D2 generic/public goal. Decided 2026-06-20. |
 | D9 | README vs. `index.md` by destination | **Always ask** (once per bundle): the skill asks whether the project is headed to GitHub or a similar forge. Forge-bound → maintain **both** `README.md` (human/forge-rendered overview) + `index.md` (OKF reserved listing, no frontmatter); not forge-bound → **`index.md` only**. Non-destructive (D6): an existing `README.md` is never deleted — if not forge-bound but one exists, leave it and ensure `index.md` exists (optionally offer Stage-2 consolidation). Asked once per bundle, not per file (D4 anti-nag) | User chose an explicit ask over inference for predictability and control; a `README.md` earns its place only where a forge auto-renders it (verified in D6). Decided 2026-06-20. |
 | D10 | Cross-link form (relative vs. bundle-absolute) | Recommend **relative** Markdown links (e.g. `../concepts/x.md`); do not rewrite to bundle-absolute `/`-rooted links. Supersedes the link-form choice in D6. `validate.py` accepts both forms; `generate_indexes.py` already emits relative links. | Both forms are conformant (spec §5.1–5.2), so this is a spec-permitted preference, not a violation — but GitHub and other forges resolve a `/`-rooted link against the **repository** root, so bundle-absolute links break whenever the bundle is a subdirectory. Verified empirically 2026-06-20 on the live repo: in `examples/handbook/concepts/onboarding.md`, GitHub rendered `/concepts/glossary.md` as `…/blob/main/concepts/glossary.md` — a 404, since the file lives under `examples/handbook/`. Relative links render correctly wherever the bundle sits, preserving OKF's "renders on GitHub" promise. Decided 2026-06-20. |
+| D11 | Distribution & auto-update (plugin packaging) | Repackage the repo as a **Claude Code plugin** (`.claude-plugin/plugin.json`) plus a **self-hosted marketplace** (`.claude-plugin/marketplace.json`, `source: ./`) so Claude Code users can `/plugin marketplace add parkscloud/okf-author` and opt into auto-update; rename `skill/`→`skills/` for default skill discovery. Keep `install.py` (copy method) for Codex + manual installs — Codex has no plugin/auto-update mechanism. | A copied skill cannot self-update; the plugin marketplace is the only native auto-update path (verified against Claude Code docs + `claude plugin validate`). Self-hosting our own marketplace lets anyone install + auto-update immediately, independent of Anthropic. Note: you cannot submit to `claude-plugins-official` (curated by Anthropic at its discretion, no application process); third-party submissions go to the **community** marketplace via an in-app form (individuals: platform.claude.com/plugins/submit), must pass `claude plugin validate` + automated safety screening, and sync nightly. Decided 2026-06-20. |
 
 ## 3. Open decisions (planning queue)
 
-_All planning decisions are resolved — D1–D10 in §2, as of 2026-06-20._ The finalized
+_All planning decisions are resolved — D1–D11 in §2, as of 2026-06-20._ The finalized
 design follows: repo layout (§5), skill behavior (§6), and the staged build plan (§7).
 Implementation begins after sign-off.
 
@@ -71,13 +72,16 @@ Implementation begins after sign-off.
 
 ```
 okf-author/
+├── .claude-plugin/               # Claude Code plugin packaging (D11)
+│   ├── plugin.json               # plugin manifest (name, version, metadata)
+│   └── marketplace.json          # self-hosted marketplace: lists this plugin (source ./)
 ├── README.md                     # orientation, status, install steps (the human/GitHub face)
 ├── DESIGN.md                     # this spec + decision log
 ├── CLAUDE.md                     # guidance for AI agents working in this repo
 ├── LICENSE                       # MIT — okf-author's own code (D8)
-├── install.py                    # cross-platform installer (D3): copies skill/okf-author/ into the agents' skills dirs
-├── skill/
-│   └── okf-author/               # the self-contained skill — this whole dir is what gets installed
+├── install.py                    # cross-platform installer (D3): copies skills/okf-author/ into the agents' skills dirs
+├── skills/
+│   └── okf-author/               # the self-contained skill — install.py copies it; the plugin discovers it
 │       ├── SKILL.md              # name + description frontmatter + Author/Convert/Validate instructions
 │       ├── validate.py           # dependency-free OKF v0.1 conformance checker (D7); also runnable standalone
 │       ├── generate_indexes.py   # deterministic index.md / log.md generator (D6 Stage 2); also runnable standalone
@@ -89,15 +93,15 @@ okf-author/
     └── handbook/                 # a tiny conformant example bundle
 ```
 
-- **install.py** — run from a clone; `--all` / `--claude` / `--codex` copy `skill/okf-author/`
+- **install.py** — run from a clone; `--all` / `--claude` / `--codex` copy `skills/okf-author/`
   into `~/.claude/skills/okf-author/` and Codex's skills dir. Python stdlib only; Windows/Mac/Linux.
-- **skill/okf-author/SKILL.md** — the product. Broad `description` for the hybrid trigger (D4);
+- **skills/okf-author/SKILL.md** — the product. Broad `description` for the hybrid trigger (D4);
   body covers the three modes (§6).
-- **skill/okf-author/validate.py** — copied with the skill so Validate mode can call it; also
+- **skills/okf-author/validate.py** — copied with the skill so Validate mode can call it; also
   runnable directly (`python validate.py <dir>`).
-- **skill/okf-author/generate_indexes.py** — copied with the skill; (re)generates `index.md` /
+- **skills/okf-author/generate_indexes.py** — copied with the skill; (re)generates `index.md` /
   `log.md` from concept frontmatter for Convert Stage 2 (§6); also runnable directly.
-- **skill/okf-author/reference/SPEC.md** — the authority the skill reads (D7), pinned to OKF v0.1.
+- **skills/okf-author/reference/SPEC.md** — the authority the skill reads (D7), pinned to OKF v0.1.
 
 ## 6. Skill behavior (SKILL.md modes)
 
@@ -117,7 +121,7 @@ okf-author/
 
 ## 7. Build plan (staged; commit per stage, push on go-ahead)
 
-1. **Scaffold + vendor** — **DONE (2026-06-20).** `LICENSE` (MIT), the `skill/okf-author/`
+1. **Scaffold + vendor** — **DONE (2026-06-20).** `LICENSE` (MIT), the `skills/okf-author/`
    dir, and the vendored `SPEC.md` + `SPEC-LICENSE.txt` + `ATTRIBUTION.md`. Byte-identity
    verified: local SHA-256 == fresh upstream pull (`b9655e60…ad6e`); pinned commit `ee67a5c`
    (2026-06-12).
@@ -142,6 +146,11 @@ okf-author/
    added `CLAUDE.md` and an example bundle (`examples/handbook`), bumped all version markers to
    **v1.0.0**, created the public repo `github.com/parkscloud/okf-author`, pushed `main` + tag
    `v1.0.0`, and published the v1.0.0 release.
+6. **Plugin packaging** — **DONE (2026-06-20).** Repackaged as a Claude Code plugin + self-hosted
+   marketplace (`.claude-plugin/plugin.json` + `marketplace.json`, `source: ./`); renamed
+   `skill/`→`skills/` for default skill discovery; kept `install.py` for Codex/manual installs.
+   Verified with `claude plugin validate --strict` (plugin + marketplace manifests). Released as
+   **v1.3.0** (D11).
 
 ## 8. Versioning
 
@@ -164,3 +173,4 @@ matching **git tag** (`vMAJOR.MINOR.PATCH`) — bump them together; the git tag 
 | 1.0.1 | 2026-06-20 | `validate.py`: URL-decode link targets so percent-encoded (`%20`) intra-bundle links resolve — removes false-positive broken-link warnings. |
 | 1.1.0 | 2026-06-20 | Add `generate_indexes.py`: deterministically (re)generates per-folder `index.md` + `log.md` and the root `index.md` (`okf_version`) from concept frontmatter. |
 | 1.2.0 | 2026-06-20 | **D10:** recommend **relative** cross-links over bundle-absolute `/`-rooted links (which break on GitHub/forges when the bundle is a subdirectory — verified live); updated SKILL.md guidance + templates and the `examples/handbook` bundle (`generate_indexes.py` already emitted relative links). Also corrected the §5 repo-layout tree (added `CLAUDE.md` + `generate_indexes.py`; dropped the never-created `docs/`). |
+| 1.3.0 | 2026-06-20 | **D11:** repackage as a Claude Code **plugin** + self-hosted **marketplace** (`.claude-plugin/`) with opt-in auto-update; rename `skill/`→`skills/` for default discovery; keep `install.py` for Codex/manual. Validated with `claude plugin validate --strict`. |
