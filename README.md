@@ -1,6 +1,6 @@
 # okf-author
 
-> **STATUS: v1.0.0.** Cross-agent skill for authoring, converting, and validating Open
+> **STATUS: v1.0.1.** Cross-agent skill for authoring, converting, and validating Open
 > Knowledge Format (OKF) Markdown — installable in **Claude Code** and **Codex**.
 > Repo: <https://github.com/parkscloud/okf-author> · Design + decision log: [`DESIGN.md`](DESIGN.md).
 

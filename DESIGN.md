@@ -1,6 +1,6 @@
 # okf-author — Design Specification
 
-**Status: v1.0.0 — released 2026-06-20.** All nine decisions are settled in §2; every build
+**Status: v1.0.1 — released 2026-06-20.** All nine decisions are settled in §2; every build
 stage (§7) is complete and verified; published at <https://github.com/parkscloud/okf-author>.
 
 ## 1. Summary
@@ -155,3 +155,4 @@ matching **git tag** (`vMAJOR.MINOR.PATCH`) — bump them together; the git tag 
 |---------|------|-------|
 | 0.0.1 | 2026-06-20 | Initial scaffold: README, DESIGN (decisions D1–D9), MIT LICENSE, vendored OKF v0.1 spec. |
 | 1.0.0 | 2026-06-20 | First functional release: `validate.py`, `SKILL.md` (three modes), `install.py` (Claude Code + Codex), `examples/handbook`, `CLAUDE.md`, full docs. Verified against Google's bundles, broken fixtures, and an end-to-end conversion. |
+| 1.0.1 | 2026-06-20 | `validate.py`: URL-decode link targets so percent-encoded (`%20`) intra-bundle links resolve — removes false-positive broken-link warnings. |

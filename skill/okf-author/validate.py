@@ -51,12 +51,13 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 # --------------------------------------------------------------------------- #
 # Constants
 # --------------------------------------------------------------------------- #
 
-CHECKER_VERSION = "1.0.0"
+CHECKER_VERSION = "1.0.1"
 OKF_VERSION = "0.1"
 RESERVED_FILENAMES = {"index.md", "log.md"}
 # Recommended by spec section 4.1; required by the reference agent. Soft here
@@ -329,6 +330,7 @@ def _check_links(rel: str, path: Path, root: Path, text: str) -> list[Finding]:
         for match in _LINK_RE.finditer(line):
             target = match.group(1).strip()
             target = target.split("#", 1)[0].split("?", 1)[0]
+            target = unquote(target)  # decode %20 etc. so percent-encoded links resolve
             if not target:
                 continue
             low = target.lower()
