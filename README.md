@@ -1,5 +1,11 @@
 # okf-author
 
+[![Release](https://img.shields.io/github/v/release/parkscloud/okf-author?label=release&color=1a73e8)](https://github.com/parkscloud/okf-author/releases)
+[![License: MIT](https://img.shields.io/github/license/parkscloud/okf-author?color=green)](LICENSE)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-6C5CE7)](#install)
+[![Codex skill](https://img.shields.io/badge/Codex-skill-111111)](#install)
+[![OKF v0.1](https://img.shields.io/badge/OKF-v0.1-1a73e8)](https://github.com/GoogleCloudPlatform/knowledge-catalog)
+
 > **STATUS: v1.3.0.** Cross-agent skill for authoring, converting, and validating Open
 > Knowledge Format (OKF) Markdown — installable in **Claude Code** and **Codex**.
 > Repo: <https://github.com/parkscloud/okf-author> · Design + decision log: [`DESIGN.md`](DESIGN.md).
