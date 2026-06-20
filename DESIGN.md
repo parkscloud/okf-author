@@ -116,8 +116,12 @@ okf-author/
    dir, and the vendored `SPEC.md` + `SPEC-LICENSE.txt` + `ATTRIBUTION.md`. Byte-identity
    verified: local SHA-256 == fresh upstream pull (`b9655e60…ad6e`); pinned commit `ee67a5c`
    (2026-06-12).
-2. **validate.py** — dependency-free checker; verify it PASSES on Google's official sample
-   bundles and FAILS on deliberately broken fixtures.
+2. **validate.py** — **DONE (2026-06-20).** Dependency-free checker (PyYAML used only when
+   already installed). Implements the §9 rules; warnings never affect the exit code; `--strict`
+   promotes title/description/timestamp to errors; `--json`/`--quiet`/`--version` supported.
+   Verified: CONFORMANT on all three Google bundles (ga4/crypto_bitcoin/stackoverflow, 78 md
+   files, 0 errors), correct errors on 6 isolated broken fixtures, and the minimal-parser
+   fallback agrees with PyYAML.
 3. **install.py** — cross-platform copy installer; confirm Codex's exact skills path first,
    then verify a real install into both `~/.claude/skills/okf-author/` and Codex's dir.
 4. **SKILL.md** — author/convert/validate behavior per §6; end-to-end test: a dry-run conversion
