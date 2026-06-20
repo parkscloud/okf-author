@@ -1,6 +1,6 @@
 # okf-author
 
-> **STATUS: v1.0.1.** Cross-agent skill for authoring, converting, and validating Open
+> **STATUS: v1.1.0.** Cross-agent skill for authoring, converting, and validating Open
 > Knowledge Format (OKF) Markdown — installable in **Claude Code** and **Codex**.
 > Repo: <https://github.com/parkscloud/okf-author> · Design + decision log: [`DESIGN.md`](DESIGN.md).
 
@@ -45,7 +45,8 @@ Markdown links; the only required frontmatter field is `type` (with `title`, `de
   (`title`, `description`, `timestamp`, and `tags`/`resource` when applicable).
 - **Convert** — bring existing Markdown into OKF safely and in stages (frontmatter first,
   structure second); in place when the directory is a clean git repo, otherwise into a
-  parallel copy. Non-destructive by default.
+  parallel copy. Non-destructive by default. The bundled `generate_indexes.py` builds the
+  per-folder `index.md`/`log.md` deterministically.
 - **Validate** — check a bundle against OKF v0.1 §9 conformance with the bundled,
   dependency-free `validate.py`.
 
@@ -74,14 +75,19 @@ It installs the skill folder into:
 Then restart your agent (or open a new session) so it discovers the skill, and mention OKF or
 ask it to author / convert / validate Markdown.
 
-## Validate a bundle directly
+## Standalone tools
 
-`validate.py` is dependency-free and also runs standalone:
+Both bundled tools are dependency-free (PyYAML used only if already installed) and run on their own:
 
 ```bash
+# validate a bundle against OKF v0.1 conformance
 python3 skill/okf-author/validate.py examples/handbook       # -> CONFORMANT
 python3 skill/okf-author/validate.py --strict path/to/bundle # also require title/description/timestamp
 python3 skill/okf-author/validate.py --json path/to/bundle   # machine-readable
+
+# (re)generate index.md + log.md across a bundle from its frontmatter
+python3 skill/okf-author/generate_indexes.py path/to/bundle --title "My Knowledge Base"
+python3 skill/okf-author/generate_indexes.py path/to/bundle --dry-run
 ```
 
 Exit code `0` = conformant, `1` = errors, `2` = bad path. Warnings (missing recommended
@@ -96,6 +102,7 @@ okf-author/
 ├── skill/okf-author/        # the installable skill (this folder is what install.py copies)
 │   ├── SKILL.md             # the skill: Author / Convert / Validate
 │   ├── validate.py          # dependency-free OKF v0.1 conformance checker
+│   ├── generate_indexes.py  # deterministic index.md / log.md generator
 │   └── reference/           # vendored OKF spec (verbatim) + license + attribution
 └── examples/handbook/       # a tiny conformant example bundle
 ```

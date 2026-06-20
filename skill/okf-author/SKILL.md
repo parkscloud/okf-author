@@ -5,12 +5,12 @@ description: Author, convert, and validate Markdown in Open Knowledge Format (OK
 
 # okf-author
 
-Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.0.1**.
+Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.1.0**.
 
 OKF (Google Cloud, v0.1, released 2026-06-12) represents knowledge as a directory of
 Markdown files with YAML frontmatter. The authoritative specification is vendored next to
 this file at **`reference/SPEC.md`** and is the source of truth — when in doubt, read it.
-A deterministic conformance checker, **`validate.py`**, ships alongside.
+A deterministic conformance checker (**`validate.py`**) and an index/log generator (**`generate_indexes.py`**) ship alongside.
 
 ## When to use this skill
 
@@ -88,9 +88,12 @@ without a clear, reversible plan.
    receive, and any structural changes. Convert only on the user's go-ahead.
 3. **Stage 1 — frontmatter (safe, high value):** add a frontmatter block with `type` + smart
    defaults to each concept file. No renames, no moves. This alone makes a bundle conformant.
-4. **Stage 2 — structure (opt-in):** only if the user wants it — add `index.md` listings, add
-   a `log.md`, rewrite links to bundle-absolute form, and add `okf_version: "0.1"` to the
-   root `index.md`. **Confirm every file rename**, and never delete an existing `README.md`.
+4. **Stage 2 — structure (opt-in):** only if the user wants it. Run the bundled
+   **`generate_indexes.py`** to write each folder's `index.md` + `log.md` and the root
+   `index.md` (with `okf_version`) deterministically from the frontmatter, instead of
+   hand-writing them: `python generate_indexes.py <bundle> [--title "…"]`. Prefer **relative**
+   links — bundle-absolute `/…` links break on GitHub when the bundle is a subdirectory.
+   **Confirm every file rename**, and never delete an existing `README.md`.
 5. **Validate** the result with `validate.py` and report.
 
 ### Destination question (README vs. index.md)
