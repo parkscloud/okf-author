@@ -57,7 +57,7 @@ from urllib.parse import unquote
 # Constants
 # --------------------------------------------------------------------------- #
 
-CHECKER_VERSION = "1.3.0"
+CHECKER_VERSION = "1.3.1"
 OKF_VERSION = "0.1"
 RESERVED_FILENAMES = {"index.md", "log.md"}
 # Recommended by spec section 4.1; required by the reference agent. Soft here

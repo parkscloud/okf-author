@@ -1,6 +1,6 @@
 # okf-author — Design Specification
 
-**Status: v1.3.0 — released 2026-06-20.** All eleven decisions are settled in §2; every build
+**Status: v1.3.1 — released 2026-06-20.** All eleven decisions are settled in §2; every build
 stage (§7) is complete and verified; published at <https://github.com/parkscloud/okf-author>.
 
 ## 1. Summary
@@ -174,3 +174,4 @@ matching **git tag** (`vMAJOR.MINOR.PATCH`) — bump them together; the git tag 
 | 1.1.0 | 2026-06-20 | Add `generate_indexes.py`: deterministically (re)generates per-folder `index.md` + `log.md` and the root `index.md` (`okf_version`) from concept frontmatter. |
 | 1.2.0 | 2026-06-20 | **D10:** recommend **relative** cross-links over bundle-absolute `/`-rooted links (which break on GitHub/forges when the bundle is a subdirectory — verified live); updated SKILL.md guidance + templates and the `examples/handbook` bundle (`generate_indexes.py` already emitted relative links). Also corrected the §5 repo-layout tree (added `CLAUDE.md` + `generate_indexes.py`; dropped the never-created `docs/`). |
 | 1.3.0 | 2026-06-20 | **D11:** repackage as a Claude Code **plugin** + self-hosted **marketplace** (`.claude-plugin/`) with opt-in auto-update; rename `skill/`→`skills/` for default discovery; keep `install.py` for Codex/manual. Validated with `claude plugin validate --strict`. |
+| 1.3.1 | 2026-06-20 | Patch: add status/install badges to `README.md`; bump all version markers to 1.3.1 so the latest release matches `main`. No skill/plugin behavior change. |
