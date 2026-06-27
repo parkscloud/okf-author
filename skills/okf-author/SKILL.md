@@ -5,7 +5,7 @@ description: Author, convert, and validate Markdown in Open Knowledge Format (OK
 
 # okf-author
 
-Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.3.1**.
+Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.4.0**.
 
 OKF (Google Cloud, v0.1, released 2026-06-12) represents knowledge as a directory of
 Markdown files with YAML frontmatter. The authoritative specification is vendored next to
@@ -57,11 +57,30 @@ title: <Human-readable display name>
 description: <One-sentence summary.>
 resource: <https://canonical/uri>    # omit for purely abstract concepts
 tags: [<tag>, <tag>]
-timestamp: <YYYY-MM-DDTHH:MM:SSZ>
+timestamp: <YYYY-MM-DDTHH:MM:SSZ>   # ISO 8601, UTC 'Z'; real time of day when editing
 ---
 
 # <Body — prefer headings, lists, tables, and fenced code over free prose>
 ```
+
+### Timestamps
+
+`timestamp` is the concept's **last-modified time**, an ISO 8601 datetime. Write it in **UTC**
+with a trailing `Z` — `YYYY-MM-DDTHH:MM:SSZ` (e.g. `2026-06-27T15:30:42Z`); this is the form
+the spec's own examples and Google's reference bundles use. **Never** emit a local-timezone
+offset like `-04:00`. Two cases, by mode:
+
+- **Authoring or live-editing** (Mode 1) → the **actual current UTC time**, including the real
+  time of day, refreshed on each meaningful edit. Don't guess the clock — read it from the
+  system: `date -u +%Y-%m-%dT%H:%M:%SZ`.
+- **Converting an existing document** (Mode 2) → the source file's **last-modified date** at
+  midnight UTC, `YYYY-MM-DDT00:00:00Z` — e.g. `date -u -r <file> +%Y-%m-%dT00:00:00Z` (or
+  Python `os.path.getmtime`). The time of day is unknown for an import, so `00:00:00Z` honestly
+  signals date-level precision.
+
+`validate.py` accepts every UTC form and only warns when a `timestamp` isn't ISO 8601 at all
+(e.g. a bare `2026-06-27` date); the rules above keep timestamps consistent, sortable, and
+faithful to when each concept actually changed.
 
 ## Mode 1 — Author (new documents)
 
@@ -72,7 +91,9 @@ When writing a new document in an OKF context (or after the user accepts an offe
    vocabulary consistent.
 2. **Fill the recommended fields:** always set `title`, `description`, and `timestamp`; add
    `resource` when the concept maps to a real asset/URL, and `tags` for cross-cutting
-   topics. Use the current time, in ISO 8601, for `timestamp`.
+   topics. For `timestamp`, use the **actual current UTC time** (real time of day, trailing
+   `Z`) read from the system with `date -u +%Y-%m-%dT%H:%M:%SZ` — don't guess it; see
+   **Timestamps** above.
 3. **Write a structured body** — headings, lists, tables, fenced code. Use the conventional
    headings when they apply: `# Schema`, `# Examples`, `# Citations`.
 4. **Link** to related concepts with **relative** links (e.g. `../concepts/glossary.md`) so
@@ -92,6 +113,8 @@ without a clear, reversible plan.
    receive, and any structural changes. Convert only on the user's go-ahead.
 3. **Stage 1 — frontmatter (safe, high value):** add a frontmatter block with `type` + smart
    defaults to each concept file. No renames, no moves. This alone makes a bundle conformant.
+   Set each file's `timestamp` to its **last-modified date** at midnight UTC
+   (`date -u -r <file> +%Y-%m-%dT00:00:00Z`) — see **Timestamps** above.
 4. **Stage 2 — structure (opt-in):** only if the user wants it. Run the bundled
    **`generate_indexes.py`** to write each folder's `index.md` + `log.md` and the root
    `index.md` (with `okf_version`) deterministically from the frontmatter, instead of
