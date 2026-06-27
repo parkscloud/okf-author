@@ -6,7 +6,7 @@
 [![Codex skill](https://img.shields.io/badge/Codex-skill-111111)](#install)
 [![OKF v0.1](https://img.shields.io/badge/OKF-v0.1-1a73e8)](https://github.com/GoogleCloudPlatform/knowledge-catalog)
 
-> **STATUS: v1.4.0.** Cross-agent skill for authoring, converting, and validating Open
+> **STATUS: v1.4.1.** Cross-agent skill for authoring, converting, and validating Open
 > Knowledge Format (OKF) Markdown — installable in **Claude Code** and **Codex**.
 > Repo: <https://github.com/parkscloud/okf-author> · Design + decision log: [`DESIGN.md`](DESIGN.md).
 
@@ -71,8 +71,13 @@ Install from this repo's built-in marketplace:
 /plugin install okf-author@okf-author
 ```
 
-Then enable auto-update for the `okf-author` marketplace in the `/plugin` interface, and Claude
-Code refreshes it at session start. (Codex has no plugin system — use the script install below.)
+**Turn on auto-update — it's off by default for this marketplace.** Self-hosted marketplaces
+don't update on their own, so you have to opt in: open the `/plugin` interface and go to
+**Marketplaces → `okf-author` → Enable auto-update**. Claude Code then refreshes the plugin at
+the start of each new session (start a fresh session to pick up a new version). If you skip this
+step, the plugin stays pinned at the version you installed until you update it by hand —
+`claude plugin marketplace update`, then `claude plugin update okf-author@okf-author`. (Codex
+has no plugin system — use the script install below.)
 
 ### Script install (Claude Code + Codex)
 

@@ -5,7 +5,7 @@ description: Author, convert, and validate Markdown in Open Knowledge Format (OK
 
 # okf-author
 
-Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.4.0**.
+Author, convert, and validate **Open Knowledge Format (OKF)** documents — skill version **1.4.1**.
 
 OKF (Google Cloud, v0.1, released 2026-06-12) represents knowledge as a directory of
 Markdown files with YAML frontmatter. The authoritative specification is vendored next to

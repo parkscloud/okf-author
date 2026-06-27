@@ -1,6 +1,6 @@
 # okf-author — Design Specification
 
-**Status: v1.4.0 — released 2026-06-27.** All twelve decisions are settled in §2; every build
+**Status: v1.4.1 — released 2026-06-27.** All twelve decisions are settled in §2; every build
 stage (§7) is complete and verified; published at <https://github.com/parkscloud/okf-author>.
 
 ## 1. Summary
@@ -177,3 +177,4 @@ matching **git tag** (`vMAJOR.MINOR.PATCH`) — bump them together; the git tag 
 | 1.3.0 | 2026-06-20 | **D11:** repackage as a Claude Code **plugin** + self-hosted **marketplace** (`.claude-plugin/`) with opt-in auto-update; rename `skill/`→`skills/` for default discovery; keep `install.py` for Codex/manual. Validated with `claude plugin validate --strict`. |
 | 1.3.1 | 2026-06-20 | Patch: add status/install badges to `README.md`; bump all version markers to 1.3.1 so the latest release matches `main`. No skill/plugin behavior change. |
 | 1.4.0 | 2026-06-27 | **D12:** timestamp policy. Author / live-edit now writes the **actual current UTC time** (real time of day, read from the system clock); conversion writes the source file's **last-modified date** at `T00:00:00Z`; always UTC `Z`, never a local offset. Updated `SKILL.md` (new **Timestamps** section + Author/Convert guidance + template comment). Grounded in the vendored spec's examples and Google's upstream bundles (verified live 2026-06-27); `validate.py` unchanged (already accepts all UTC forms). |
+| 1.4.1 | 2026-06-27 | Patch: expand the README plugin-install instructions so users notice that marketplace **auto-update is off by default** for self-hosted marketplaces and must be enabled in `/plugin` (with the exact **Marketplaces → `okf-author` → Enable auto-update** path + the manual `claude plugin … update` fallback). Bumped all version markers to 1.4.1 in lockstep. No skill/plugin behavior change. |

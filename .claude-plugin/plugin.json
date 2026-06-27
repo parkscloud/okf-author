@@ -1,6 +1,6 @@
 {
   "name": "okf-author",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Author, convert, and validate Markdown in Open Knowledge Format (OKF) — the open, vendor-neutral spec for representing knowledge as a directory of Markdown files with YAML frontmatter.",
   "author": {
     "name": "Robert Parks",

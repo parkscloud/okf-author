@@ -43,7 +43,7 @@ from collections import defaultdict
 from pathlib import Path
 from urllib.parse import quote
 
-GENERATOR_VERSION = "1.4.0"
+GENERATOR_VERSION = "1.4.1"
 DEFAULT_OKF_VERSION = "0.1"
 RESERVED = {"index.md", "log.md"}
 
